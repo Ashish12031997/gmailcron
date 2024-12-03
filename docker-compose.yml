@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  web-server:
+    image: gmail-api
+    container_name: django
+    command: python manage.py runserver 0:8000
+    volumes:
+      - .:/gmail_api
+    ports:
+      - '8000:8000'
+    restart: always
+
+  celery-server:
+    image: gmail-api
+    command: celery -A gmailcron worker -c 4 -Q delete_emails -l info -f celery_logs/celery.log -n gmail_delete_emails.%h --without-gossip --without-mingle --without-heartbeat -Ofair
+    container_name: celery
+    volumes:
+      - .:/gmail_api
+
+  beat-server:
+    image: gmail-api
+    command: celery -A gmailcron beat -l info -f celery_logs/beat.log
+    container_name: beat
+    volumes:
+      - .:/gmail_api
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: postgres_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis-cache
+    command: ['redis-server', '--requirepass', 'redis_password']
+    ports:
+      - '6379:6379'
+volumes:
+  postgres_data:
