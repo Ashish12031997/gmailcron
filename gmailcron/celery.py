@@ -39,7 +39,7 @@ app.conf.update(
         "broker_connection_retry_on_startup": True,
     }
 )
-app.conf.beat_scheduler = "gmailcron.celery_beat_scheduler:DatabaseScheduler"
+app.conf.beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
 
 #  Routing task to different queue
 app.conf.task_routes = {"cron_app.tasks.delete_emails": {"queue": "delete_emails"}}
