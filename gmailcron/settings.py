@@ -80,7 +80,8 @@ WSGI_APPLICATION = 'gmailcron.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': {},
+    'celery' : {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres_db",
         "USER": "postgres_user",

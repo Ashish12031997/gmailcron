@@ -14,6 +14,7 @@ debug, info, warning = logger.debug, logger.info, logger.warning
 class DatabaseScheduler(DatabaseScheduler):
 
     def sync(self):
+        
         if logger.isEnabledFor(logging.DEBUG):
             debug("Writing entries...")
         _tried = set()

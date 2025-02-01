@@ -16,8 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import path, include
 from cron_app.views import get_tasks, hello
 
 urlpatterns = [
@@ -30,4 +29,5 @@ urlpatterns = [
         "task",
         view=get_tasks,
     ),
+    path('cron/', include('cron_app.routes.api_endpoints', namespace='cron')),
 ]

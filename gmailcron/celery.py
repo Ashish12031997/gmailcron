@@ -44,14 +44,6 @@ app.conf.beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
 #  Routing task to different queue
 app.conf.task_routes = {"cron_app.tasks.delete_emails": {"queue": "delete_emails"}}
 
-# app.conf.task_routes = (
-#     [
-#         ("main.tasks.schedule_publish_photo", {"queue": "instagram_normal_post"}),
-#         ("main.tasks.schedule_publish_video", {"queue": "instagram_video_post"}),
-#         ("main.tasks.publish_carousel", {"queue": "instagram_video_post"}),
-#     ],
-# )
-
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
@@ -59,4 +51,4 @@ app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
-    print(f"Request: {self.request!r}")
+    print("waitinggg...")
