@@ -13,9 +13,7 @@ from django.conf import settings
 # )
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "gmailcron.settings"
-)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gmailcron.settings")
 
 app = Celery("gmailcron")
 
@@ -27,13 +25,13 @@ app.config_from_object(settings, namespace="CELERY")
 rabbit_mq_password = quote_plus("redis_password")
 app.conf.update(
     {
-        "broker_url": f"amqp://:redis_password@0.0.0.0",
+        "broker_url": f"redis://redis:6379",
         "task_serializer": "json",
         "task_acks_late": True,
         "result_serializer": "json",
         "result_backend": "django-db",
         "accept_content": ["json"],
-        "backend": f"amqp://:redis_password@0.0.0.0",
+        "backend": f"redis://redis:6379",
         "worker_prefetch_multiplier": 1,
         "worker_cancel_long_running_tasks_on_connection_loss": True,
         "result_extended": True,
@@ -41,14 +39,10 @@ app.conf.update(
         "broker_connection_retry_on_startup": True,
     }
 )
-app.conf.beat_scheduler = (
-    "gmailcron.celery_beat_scheduler:DatabaseScheduler"
-)
+app.conf.beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
 
 #  Routing task to different queue
-app.conf.task_routes = {
-    "cron_app.tasks.delete_emails": {"queue": "delete_emails"}
-}
+app.conf.task_routes = {"cron_app.tasks.delete_emails": {"queue": "delete_emails"}}
 
 # app.conf.task_routes = (
 #     [
