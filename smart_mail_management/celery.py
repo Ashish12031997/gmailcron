@@ -6,16 +6,10 @@ from urllib.parse import quote_plus
 from celery import Celery
 from django.conf import settings
 
-# from main.secret_and_configuration.constant import (
-#     RABBIT_MQ_ENDPOINT,
-#     RABBIT_MQ_PASSWORD,
-#     RABBIT_MQ_USER,
-# )
-
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gmailcron.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "smart_mail_management.settings")
 
-app = Celery("gmailcron")
+app = Celery("smart_mail_management")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
@@ -23,6 +17,8 @@ app = Celery("gmailcron")
 #   should have a `CELERY_` prefix.
 app.config_from_object(settings, namespace="CELERY")
 rabbit_mq_password = quote_plus("redis_password")
+
+# get below creds from env
 app.conf.update(
     {
         "broker_url": f"redis://redis:6379",
@@ -42,13 +38,10 @@ app.conf.update(
 app.conf.beat_scheduler = "django_celery_beat.schedulers:DatabaseScheduler"
 
 #  Routing task to different queue
-app.conf.task_routes = {"cron_app.tasks.delete_emails": {"queue": "delete_emails"}}
+app.conf.task_routes = {
+    "mail_manager_backend.tasks.delete_emails": {"queue": "delete_emails"}
+}
 
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
-
-
-@app.task(bind=True)
-def debug_task(self):
-    print("waitinggg...")

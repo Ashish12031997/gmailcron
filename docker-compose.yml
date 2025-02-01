@@ -1,37 +1,37 @@
-version: "3.9"
+version: '3.9'
 
 services:
   web-server:
-    image: gmail-api
+    image: gmail-api-backend
     container_name: django
     command: python manage.py runserver 0:8000
     volumes:
-      - .:/gmail_api
+      - .:/app
     ports:
-      - "8000:8000"
+      - '8000:8000'
     restart: always
     depends_on:
       - postgres
       - redis
 
   celery-server:
-    image: gmail-api
-    # command: celery -A gmailcron worker -c 4 -Q delete_emails -l info -f celery_logs/celery.log -n gmail_delete_emails.%h --without-gossip --without-mingle --without-heartbeat -Ofair
-    command: celery -A gmailcron worker -c 4 -Q delete_emails -l info  -n gmail_delete_emails.%h --without-gossip --without-mingle --without-heartbeat -Ofair
+    image: gmail-api-backend
+    # command: celery -A smart_mail_management worker -c 4 -Q delete_emails -l info -f celery_logs/celery.log -n gmail_delete_emails.%h --without-gossip --without-mingle --without-heartbeat -Ofair
+    command: celery -A smart_mail_management worker -c 4 -Q delete_emails -l info  -n gmail_delete_emails.%h --without-gossip --without-mingle --without-heartbeat -Ofair
     container_name: celery
     volumes:
-      - .:/gmail_api
+      - .:/app
     depends_on:
       - postgres
       - redis
 
   beat-server:
-    image: gmail-api
-    # command: celery -A gmailcron beat -l info -f celery_logs/beat.log
-    command: celery -A gmailcron beat -l info
+    image: gmail-api-backend
+    # command: celery -A smart_mail_management beat -l info -f celery_logs/beat.log
+    command: celery -A smart_mail_management beat -l info
     container_name: beat
     volumes:
-      - .:/gmail_api
+      - .:/app
     depends_on:
       - postgres
       - redis
@@ -44,7 +44,7 @@ services:
       POSTGRES_PASSWORD: postgres_password
       POSTGRES_DB: postgres_db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -53,7 +53,7 @@ services:
     container_name: redis-cache
     # command: ["redis-server", "--requirepass", "redis_password"]
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
 volumes:
   postgres_data:

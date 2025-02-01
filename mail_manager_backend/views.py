@@ -7,7 +7,7 @@ from django_celery_beat.models import CrontabSchedule, PeriodicTask, PeriodicTas
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from cron_app.tasks import delete_emails
+from mail_manager_backend.tasks import delete_emails
 
 
 @api_view(["GET"])
@@ -23,7 +23,7 @@ def get_tasks(request):
         minute="*/1",
     )
     task_info = dict(
-        task="cron_app.tasks.delete_emails",
+        task="mail_manager_backend.tasks.delete_emails",
         crontab=crontab,
         queue="delete_emails",
         one_off=False,  # if you want to disable task atfer first run make it true default is False

@@ -1,5 +1,5 @@
 build:
-	docker build -t gmail-api .
+	docker build -t gmail-api-backend .
 	docker-compose build
 
 start: build
