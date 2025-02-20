@@ -24,3 +24,5 @@ RUN pip install -r requirements.txt --no-cache-dir
 EXPOSE 8000
 STOPSIGNAL SIGTERM
 CMD ["/app/start-server.sh"]
+
+

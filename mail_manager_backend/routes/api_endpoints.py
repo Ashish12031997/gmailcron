@@ -5,7 +5,7 @@ from mail_manager_backend.handlers.health_check import (
 )
 from mail_manager_backend.handlers.delete_emails_job import delete_emails
 
-app_name = "cron"
+app_name = "gmail"
 
 urlpatterns = [
     path("health-check/", health_check, name="health-check"),

@@ -30,6 +30,7 @@ urlpatterns = [
         view=get_tasks,
     ),
     path(
-        "cron/", include("mail_manager_backend.routes.api_endpoints", namespace="cron")
+        "gmail/",
+        include("mail_manager_backend.routes.api_endpoints", namespace="gmail"),
     ),
 ]
